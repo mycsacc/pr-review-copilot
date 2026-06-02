@@ -90,6 +90,8 @@ function ComplexityBar({ value }) {
   )
 }
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+
 export default function App() {
   const [prUrl, setPrUrl] = useState('')
   const [status, setStatus] = useState('idle') // idle | loading | done | error
