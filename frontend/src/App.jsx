@@ -1,21 +1,22 @@
 import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const SEVERITY_COLORS = {
   critical: { bg: '#3d1a1a', border: '#f85149', text: '#f85149', badge: '#f85149' },
-  warning:  { bg: '#2d2a14', border: '#d29922', text: '#d29922', badge: '#d29922' },
-  info:     { bg: '#1a2a3a', border: '#58a6ff', text: '#58a6ff', badge: '#58a6ff' },
+  warning: { bg: '#2d2a14', border: '#d29922', text: '#d29922', badge: '#d29922' },
+  info: { bg: '#1a2a3a', border: '#58a6ff', text: '#58a6ff', badge: '#58a6ff' },
 }
 
 const TYPE_COLORS = {
-  performance:   { bg: '#1a2d1a', border: '#3fb950', text: '#3fb950' },
-  readability:   { bg: '#1a1a3d', border: '#a371f7', text: '#a371f7' },
+  performance: { bg: '#1a2d1a', border: '#3fb950', text: '#3fb950' },
+  readability: { bg: '#1a1a3d', border: '#a371f7', text: '#a371f7' },
   'best-practice': { bg: '#2d1f2d', border: '#db61a2', text: '#db61a2' },
 }
 
 const VERDICT_CONFIG = {
-  'approve':           { icon: '✓', color: '#3fb950', label: 'Approve' },
-  'request-changes':   { icon: '✗', color: '#f85149', label: 'Request Changes' },
-  'needs-discussion':  { icon: '◉', color: '#d29922', label: 'Needs Discussion' },
+  'approve': { icon: '✓', color: '#3fb950', label: 'Approve' },
+  'request-changes': { icon: '✗', color: '#f85149', label: 'Request Changes' },
+  'needs-discussion': { icon: '◉', color: '#d29922', label: 'Needs Discussion' },
 }
 
 function Badge({ label, color }) {
@@ -98,6 +99,10 @@ export default function App() {
   const [streamText, setStreamText] = useState('')
   const [error, setError] = useState('')
 
+  useEffect(() => {
+    fetch(`${BASE_URL}/wake`).catch(() => { })
+  }, [])
+
   async function handleReview() {
     if (!prUrl.trim()) return
 
@@ -108,7 +113,8 @@ export default function App() {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:3001/review', {
+      const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+      const response = await fetch(`${BASE_URL}/review`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prUrl }),
